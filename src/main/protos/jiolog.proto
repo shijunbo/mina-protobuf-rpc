@@ -1,0 +1,41 @@
+option java_package = "com.qihoo.sdet.jio.api.logging";
+option java_outer_classname = "RpcLogEntry";
+
+option optimize_for = SPEED;
+
+message PayloadContent {
+	required string uuid = 1; // a reference to RpcPayloadInfo's uuid
+	required string content = 2; // a textual representation of the payload content.
+}
+
+
+message RpcPayloadInfo {
+	required int64 ts = 1; 
+	optional int32 size = 2;
+	optional string uuid = 3; // a unique id which can be used to lookup the payload details if logged.
+}
+
+message RpcCall {
+	required int32 duration = 1; // milliseconds
+	required string server = 2;
+	required string signature = 3;
+	required string client = 4;
+	required int32 corId = 5;
+	optional string error = 6;
+	optional RpcPayloadInfo request = 7;
+	optional RpcPayloadInfo response = 8;
+}
+
+message OobResponse {
+	required string server = 1;
+	required string signature = 2;
+	required string client = 3;
+	required int32 corId = 4;
+	optional RpcPayloadInfo event = 5;
+}
+
+message OobMessage {
+	required string server = 1;
+	required string client = 2;
+	optional RpcPayloadInfo event = 3;
+}

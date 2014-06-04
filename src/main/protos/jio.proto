@@ -1,0 +1,76 @@
+option java_package = "com.qihoo.sdet.jio.api.protocol";
+option java_outer_classname = "RpcProtocol";
+
+option optimize_for = SPEED;
+
+message ConnectRequest {
+    required int32 correlationId = 1;
+    required string clientHostName = 2;
+    required int32 clientPort = 3;
+    required string clientPID = 4;
+    optional bool compress = 5;
+}
+
+message ConnectResponse {
+    required int32 correlationId = 1;
+    optional string serverPID = 2;
+    optional ConnectErrorCode errorCode = 3;
+    optional bool compress = 4;
+}
+
+enum ConnectErrorCode {
+  ALREADY_CONNECTED = 0; // Client with same name already connected.
+}
+
+message RpcRequest {
+    required int32 correlationId = 1;
+    required string serviceIdentifier = 2;
+    required string methodIdentifier = 3;
+    required bytes requestBytes = 4;
+    optional int32 timeoutMs = 5;
+}
+
+message RpcResponse {
+    required int32 correlationId = 1;
+    required bytes responseBytes = 2;
+}
+
+message RpcError {
+    required int32 correlationId = 1;
+    required string errorMessage = 2; 
+}
+
+message RpcCancel {
+    required int32 correlationId = 1;
+}
+
+message OobResponse {
+    required int32 correlationId = 1;
+    required bytes messageBytes = 2;
+}
+
+message OobMessage {
+    required bytes messageBytes = 1;
+}
+
+message WirePayload {
+	optional ConnectRequest connectRequest = 1;
+	optional ConnectResponse connectResponse = 2;
+	optional RpcRequest rpcRequest = 3;
+	optional RpcResponse rpcResponse = 4;
+	optional RpcError rpcError = 5;
+	optional RpcCancel rpcCancel = 6;
+	
+	optional OobResponse oobResponse = 7; 
+		// out of band responses from RPC server to client during the processing of a RPC call
+	
+	optional OobMessage oobMessage = 8;
+		// bidirectional message not related to any particular RPC call. 
+	
+	optional OobMessage transparentMessage = 100; 
+		//Message just passed through the filterChain and not touched. 
+		//Reduces need of extension handling for several of customization cases.
+	
+	extensions 1000 to max;
+		// for rpcprotocol customizations
+}

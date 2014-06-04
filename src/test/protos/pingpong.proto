@@ -1,0 +1,21 @@
+option java_package = "com.qihoo.sdet.jio.test.example";
+option java_outer_classname = "PingPong";
+option java_generic_services = true;
+
+message Ping {
+	required int32 number = 1;
+    required bytes pingData = 2;
+}
+
+message Pong {
+	required int32 number = 1;
+    required bytes pongData = 2;
+}
+
+service PingService {
+    rpc ping(Ping) returns (Pong);
+}
+
+service PongService {
+    rpc pong(Pong) returns (Ping);
+}
